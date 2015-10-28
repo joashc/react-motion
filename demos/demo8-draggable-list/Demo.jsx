@@ -73,31 +73,29 @@ const Demo = React.createClass({
     return (
       <div className="demo8">
         {range(itemsCount).map(i => {
-          const style = lastPressed === i && isPressed
-            ? {
-                scale: spring(1.1, springConfig),
-                shadow: spring(16, springConfig),
-                y: mouse,
-              }
-            : {
-                scale: spring(1, springConfig),
-                shadow: spring(1, springConfig),
-                y: spring(order.indexOf(i) * 100, springConfig),
+          const thisPressed = lastPressed === i && isPressed;
+          const style = 
+             {
+                scale: thisPressed ? spring(1.1, springConfig): spring(1, springConfig),
+                shadow: thisPressed? spring(16, springConfig): spring(1, springConfig),
+                y: thisPressed? mouse : order.indexOf(i) > order.indexOf(lastPressed) ? spring((order.indexOf(i) * 100) + 90, springConfig) : spring(order.indexOf(i) * 100, springConfig) ,
+                height: lastPressed === i && !isPressed ? spring(180, springConfig) : spring(90, springConfig)
               };
           return (
             <Motion style={style} key={i}>
-              {({scale, shadow, y}) =>
+              {({scale, shadow, y, color, height}) =>
                 <div
                   onMouseDown={this.handleMouseDown.bind(null, i, y)}
                   onTouchStart={this.handleTouchStart.bind(null, i, y)}
                   className="demo8-item"
                   style={{
+                    height: `${height}px`,
                     boxShadow: `rgba(0, 0, 0, 0.2) 0px ${shadow}px ${2 * shadow}px 0px`,
                     transform: `translate3d(0, ${y}px, 0) scale(${scale})`,
                     WebkitTransform: `translate3d(0, ${y}px, 0) scale(${scale})`,
                     zIndex: i === lastPressed ? 99 : i,
                   }}>
-                  {order.indexOf(i) + 1}
+                  {order.indexOf(i) + 1} - {i}
                 </div>
               }
             </Motion>
